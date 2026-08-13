@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm -v)",
+      "Bash(command -v brew)",
+      "Bash(xcode-select -p)",
+      "Bash(sw_vers)",
+      "Bash(mkdir -p ~/.local)",
+      "Read(//Users/michaelcasey/.local/**)",
+      "Bash(curl -fsSL https://nodejs.org/dist/index.json -o /tmp/node-index.json)",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -fsSL \"https://nodejs.org/dist/v24.19.0/node-v24.19.0-darwin-arm64.tar.gz\" -o node.tar.gz)",
+      "Bash(tar -xzf node.tar.gz)",
+      "Bash(rm node.tar.gz)",
+      "Bash(mv node-v24.19.0-darwin-arm64 node)",
+      "Bash(printf '\\\\n# Added for Node.js \\(local RSS reader project\\)\\\\nexport PATH=\"$HOME/.local/node/bin:$PATH\"\\\\n')",
+      "Read(//Users/michaelcasey/**)",
+      "Bash(touch /usr/local/bin/.writetest)",
+      "Bash(rm /usr/local/bin/.writetest)"
+    ]
+  }
+}
