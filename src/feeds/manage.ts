@@ -75,6 +75,62 @@ export function subscribeToFeedUrl(userId: number, feedUrl: string, folderId: nu
   return { kind: "subscribed", feedId: feed.id, title: feed.title };
 }
 
+export type UpdateFeedUrlResult =
+  | { kind: "updated" }
+  | { kind: "unchanged" }
+  | { kind: "conflict"; message: string }
+  | { kind: "invalid"; message: string };
+
+/**
+ * Changes a feed's URL in place — same feed row, same folder assignment,
+ * same article history. Distinct from unsubscribe+re-add, which would lose
+ * all of that. Conditional-request state is reset (the old ETag/Last-Modified
+ * belong to the old URL) and the feed is queued for an immediate refresh.
+ */
+export async function updateFeedUrl(userId: number, feedId: number, rawUrl: string): Promise<UpdateFeedUrlResult> {
+  const owns = db
+    .select()
+    .from(subscriptions)
+    .where(and(eq(subscriptions.userId, userId), eq(subscriptions.feedId, feedId)))
+    .get();
+  if (!owns) return { kind: "invalid", message: "Feed not found" };
+
+  const normalized = normalizeFeedUrl(rawUrl);
+  if (!normalized) return { kind: "invalid", message: "Not a valid URL" };
+
+  const feed = db.select().from(feeds).where(eq(feeds.id, feedId)).get();
+  if (!feed) return { kind: "invalid", message: "Feed not found" };
+  if (feed.feedUrl === normalized) return { kind: "unchanged" };
+
+  const conflicting = db.select().from(feeds).where(eq(feeds.feedUrl, normalized)).get();
+  if (conflicting) {
+    return { kind: "conflict", message: "You're already subscribed to a feed at that URL" };
+  }
+
+  if (!(await isValidFeed(normalized))) {
+    return { kind: "invalid", message: "That URL doesn't look like a valid RSS/Atom feed" };
+  }
+
+  const now = new Date().toISOString();
+  db.update(feeds)
+    .set({
+      feedUrl: normalized,
+      etag: null,
+      lastModified: null,
+      consecutiveFailureCount: 0,
+      status: "active",
+      httpStatus: null,
+      lastError: null,
+      nextCheckAt: now,
+      updatedAt: now,
+    })
+    .where(eq(feeds.id, feedId))
+    .run();
+
+  logger.info("feed.url_updated", { feedId });
+  return { kind: "updated" };
+}
+
 export function unsubscribe(userId: number, subscriptionId: number) {
   db.delete(subscriptions).where(and(eq(subscriptions.id, subscriptionId), eq(subscriptions.userId, userId))).run();
 }

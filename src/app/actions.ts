@@ -7,7 +7,7 @@ import { markRead, markUnread, setStarred, markFeedRead, markFolderRead, markAll
 import { previewOpmlImport, importOpmlEntries } from "@/opml/importer";
 import type { OpmlPreviewEntry, OpmlPreviewResult, OpmlImportSummary } from "@/opml/types";
 import { exportOpml } from "@/opml/exporter";
-import { addFeedByUrl, unsubscribe, deleteFeedAndArticles, moveToFolder, renameSubscription, createFolder, type AddFeedResult } from "@/feeds/manage";
+import { addFeedByUrl, unsubscribe, deleteFeedAndArticles, moveToFolder, renameSubscription, updateFeedUrl, createFolder, type AddFeedResult } from "@/feeds/manage";
 import { refreshFeed } from "@/jobs/refresh";
 import { refreshAllDueFeeds, refreshFeedsNow } from "@/jobs/scheduler";
 import { searchArticles as searchArticlesQuery } from "@/search/index";
@@ -109,6 +109,15 @@ export async function moveToFolderAction(subscriptionId: number, folderId: numbe
 export async function renameSubscriptionAction(subscriptionId: number, customTitle: string | null) {
   renameSubscription(getCurrentUserId(), subscriptionId, customTitle);
   revalidatePath("/");
+}
+
+export async function updateFeedUrlAction(feedId: number, newUrl: string) {
+  const result = await updateFeedUrl(getCurrentUserId(), feedId, newUrl);
+  if (result.kind === "updated") {
+    void refreshFeed(feedId).catch(() => {});
+  }
+  revalidatePath("/");
+  return result;
 }
 
 export async function createFolderAction(name: string) {

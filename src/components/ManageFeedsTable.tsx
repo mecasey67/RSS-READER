@@ -10,6 +10,7 @@ import {
   deleteFeedAction,
   moveToFolderAction,
   renameSubscriptionAction,
+  updateFeedUrlAction,
   createFolderAction,
   exportOpmlAction,
 } from "@/app/actions";
@@ -180,19 +181,39 @@ function FeedRow({
   onRefresh: () => void;
   onChanged: () => void;
 }) {
-  const [renaming, setRenaming] = useState(false);
+  const [mode, setMode] = useState<"view" | "rename" | "editUrl">("view");
   const [title, setTitle] = useState(row.title);
+  const [url, setUrl] = useState(row.feedUrl);
+  const [urlError, setUrlError] = useState<string | null>(null);
+  const [isSavingUrl, setIsSavingUrl] = useState(false);
   const status = statusLabel(row);
+
+  async function submitUrl(e: React.FormEvent) {
+    e.preventDefault();
+    setIsSavingUrl(true);
+    setUrlError(null);
+    try {
+      const result = await updateFeedUrlAction(row.feedId, url);
+      if (result.kind === "updated" || result.kind === "unchanged") {
+        setMode("view");
+        onChanged();
+      } else {
+        setUrlError(result.message);
+      }
+    } finally {
+      setIsSavingUrl(false);
+    }
+  }
 
   return (
     <tr className="border-t border-border align-top">
       <td className="max-w-xs px-3 py-2">
-        {renaming ? (
+        {mode === "rename" && (
           <form
             onSubmit={async (e) => {
               e.preventDefault();
               await renameSubscriptionAction(row.subscriptionId, title || null);
-              setRenaming(false);
+              setMode("view");
               onChanged();
             }}
             className="flex gap-1"
@@ -207,7 +228,36 @@ function FeedRow({
               Save
             </button>
           </form>
-        ) : (
+        )}
+        {mode === "editUrl" && (
+          <form onSubmit={submitUrl}>
+            <div className="flex gap-1">
+              <input
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                inputMode="url"
+                className="w-full rounded border border-border px-1.5 py-0.5 text-sm"
+                autoFocus
+              />
+              <button type="submit" disabled={isSavingUrl} className="text-xs text-accent disabled:opacity-50">
+                {isSavingUrl ? "Checking…" : "Save"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("view");
+                  setUrl(row.feedUrl);
+                  setUrlError(null);
+                }}
+                className="text-xs text-muted"
+              >
+                Cancel
+              </button>
+            </div>
+            {urlError && <p className="mt-1 text-xs text-danger">{urlError}</p>}
+          </form>
+        )}
+        {mode === "view" && (
           <>
             <div className="truncate font-medium">{row.title}</div>
             <div className="truncate text-xs text-muted">{row.feedUrl}</div>
@@ -247,8 +297,11 @@ function FeedRow({
           <button onClick={onRefresh} disabled={isRefreshing} className="text-accent hover:underline disabled:opacity-50">
             {isRefreshing ? "Refreshing…" : "Refresh now"}
           </button>
-          <button onClick={() => setRenaming(true)} className="text-muted hover:underline">
+          <button onClick={() => setMode("rename")} className="text-muted hover:underline">
             Rename
+          </button>
+          <button onClick={() => setMode("editUrl")} className="text-muted hover:underline">
+            Edit URL
           </button>
           {row.siteUrl && (
             <a href={row.siteUrl} target="_blank" rel="noopener noreferrer" className="text-muted hover:underline">
