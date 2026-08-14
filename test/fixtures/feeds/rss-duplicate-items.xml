@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Duplicate Items Blog</title>
+    <link>https://dupes.example.com</link>
+    <description>Feed that lists the same item twice</description>
+    <item>
+      <title>Repeated Post</title>
+      <link>https://dupes.example.com/repeated</link>
+      <guid>https://dupes.example.com/repeated</guid>
+      <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate>
+      <description>first occurrence</description>
+    </item>
+    <item>
+      <title>Repeated Post</title>
+      <link>https://dupes.example.com/repeated</link>
+      <guid>https://dupes.example.com/repeated</guid>
+      <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate>
+      <description>second occurrence, identical</description>
+    </item>
+  </channel>
+</rss>

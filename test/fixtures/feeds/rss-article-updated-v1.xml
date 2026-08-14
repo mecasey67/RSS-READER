@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Changing Post Blog</title>
+    <link>https://changing.example.com</link>
+    <description>Feed used to test article-update behavior</description>
+    <item>
+      <title>Original Title</title>
+      <link>https://changing.example.com/post</link>
+      <guid>https://changing.example.com/post</guid>
+      <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate>
+      <description>Original summary text.</description>
+    </item>
+  </channel>
+</rss>

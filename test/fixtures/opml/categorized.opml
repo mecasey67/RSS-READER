@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head><title>Categorized Subscriptions</title></head>
+  <body>
+    <outline text="Technology" title="Technology">
+      <outline text="Ars Technica" title="Ars Technica" type="rss" xmlUrl="https://arstechnica.com/feed/" htmlUrl="https://arstechnica.com" />
+      <outline text="The Verge" title="The Verge" type="rss" xmlUrl="https://theverge.com/rss/index.xml" htmlUrl="https://theverge.com" />
+    </outline>
+    <outline text="Libraries" title="Libraries">
+      <outline text="Library Journal" title="Library Journal" type="rss" xmlUrl="https://libraryjournal.com/feed" htmlUrl="https://libraryjournal.com" />
+    </outline>
+  </body>
+</opml>

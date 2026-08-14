@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head><title>Missing xmlUrl</title></head>
+  <body>
+    <outline text="Good Feed" title="Good Feed" type="rss" xmlUrl="https://good.example.com/feed" htmlUrl="https://good.example.com" />
+    <outline text="No URL Feed" title="No URL Feed" type="rss" htmlUrl="https://nourl.example.com" />
+  </body>
+</opml>

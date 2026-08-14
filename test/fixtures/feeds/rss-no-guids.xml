@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>No GUIDs Blog</title>
+    <link>https://noguid.example.com</link>
+    <description>Feed where items have no guid element</description>
+    <item>
+      <title>Post Without Guid</title>
+      <link>https://noguid.example.com/post-1</link>
+      <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate>
+      <description>relies on link for identity</description>
+    </item>
+    <item>
+      <title>Another Guidless Post With No Link Either</title>
+      <pubDate>Tue, 02 Jan 2024 10:00:00 GMT</pubDate>
+      <description>relies on fallback hash for identity</description>
+    </item>
+  </channel>
+</rss>

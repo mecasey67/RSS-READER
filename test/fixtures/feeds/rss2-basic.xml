@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Example RSS Blog</title>
+    <link>https://example.com</link>
+    <description>An example RSS 2.0 feed</description>
+    <language>en-us</language>
+    <item>
+      <title>First Post</title>
+      <link>https://example.com/posts/first-post</link>
+      <guid isPermaLink="false">urn:uuid:1111-2222-3333</guid>
+      <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate>
+      <description>This is the first post summary.</description>
+    </item>
+    <item>
+      <title>Second Post</title>
+      <link>https://example.com/posts/second-post</link>
+      <guid isPermaLink="false">urn:uuid:4444-5555-6666</guid>
+      <pubDate>Tue, 02 Jan 2024 10:00:00 GMT</pubDate>
+      <description>This is the second post summary.</description>
+    </item>
+  </channel>
+</rss>

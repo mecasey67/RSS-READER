@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head><title>Unicode Names</title></head>
+  <body>
+    <outline text="日本語のブログ" title="日本語のブログ" type="rss" xmlUrl="https://example.jp/feed" htmlUrl="https://example.jp" />
+    <outline text="Café &amp; Société">
+      <outline text="Le Monde Diplomatique" title="Le Monde Diplomatique" type="rss" xmlUrl="https://example.fr/feed" htmlUrl="https://example.fr" />
+    </outline>
+    <outline text="Emoji Blog 🚀" title="Emoji Blog 🚀" type="rss" xmlUrl="https://emoji.example.com/feed" htmlUrl="https://emoji.example.com" />
+  </body>
+</opml>

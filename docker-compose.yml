@@ -1,0 +1,26 @@
+services:
+  reader:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: /app/data/reader.db
+      APPLICATION_URL: ${APPLICATION_URL:-http://localhost:3000}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@localhost}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env to protect this instance}
+      SESSION_SECRET: ${SESSION_SECRET:?generate with: openssl rand -base64 32}
+      FEED_REFRESH_INTERVAL: ${FEED_REFRESH_INTERVAL:-20}
+      FETCH_CONCURRENCY: ${FETCH_CONCURRENCY:-4}
+      USER_AGENT: ${USER_AGENT:-ModernRSSReader/1.0 (+self-hosted feed reader)}
+    volumes:
+      - reader-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  reader-data:

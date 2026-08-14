@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head><title>Malformed Entries</title></head>
+  <body>
+    <outline text="Good Feed" title="Good Feed" type="rss" xmlUrl="https://good.example.com/feed" htmlUrl="https://good.example.com" />
+    <outline text="Bad URL Feed" title="Bad URL Feed" type="rss" xmlUrl="not a valid url" />
+    <outline />
+    <outline text="Another Good Feed" title="Another Good Feed" type="rss" xmlUrl="https://good2.example.com/feed" htmlUrl="https://good2.example.com" />
+  </body>
+</opml>

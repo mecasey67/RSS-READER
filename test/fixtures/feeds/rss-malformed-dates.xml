@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Malformed Date Blog</title>
+    <link>https://dates.example.com</link>
+    <description>Feed with malformed publication dates</description>
+    <item>
+      <title>Good Date</title>
+      <link>https://dates.example.com/good</link>
+      <guid>https://dates.example.com/good</guid>
+      <pubDate>Mon, 01 Jan 2024 10:00:00 GMT</pubDate>
+      <description>fine</description>
+    </item>
+    <item>
+      <title>Garbage Date</title>
+      <link>https://dates.example.com/garbage</link>
+      <guid>https://dates.example.com/garbage</guid>
+      <pubDate>not-a-real-date</pubDate>
+      <description>should still import without a published date</description>
+    </item>
+    <item>
+      <title>Missing Date</title>
+      <link>https://dates.example.com/missing</link>
+      <guid>https://dates.example.com/missing</guid>
+      <description>no pubDate element at all</description>
+    </item>
+    <item>
+      <title>Bare Date</title>
+      <link>https://dates.example.com/bare</link>
+      <guid>https://dates.example.com/bare</guid>
+      <pubDate>2024-03-05</pubDate>
+      <description>a bare yyyy-mm-dd date</description>
+    </item>
+  </channel>
+</rss>
