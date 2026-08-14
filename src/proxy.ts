@@ -5,6 +5,17 @@ import type { SessionData } from "@/security/auth";
 const PUBLIC_PATHS = ["/login", "/favicon.ico"];
 
 export async function proxy(request: NextRequest) {
+  // TEMPORARY DEBUG — remove after diagnosing Railway auth issue.
+  console.log(
+    JSON.stringify({
+      debug: "proxy.envCheck",
+      path: request.nextUrl.pathname,
+      hasAdminPassword: !!process.env.ADMIN_PASSWORD,
+      hasSessionSecret: !!process.env.SESSION_SECRET,
+      sessionSecretLen: process.env.SESSION_SECRET?.length ?? 0,
+      nodeEnv: process.env.NODE_ENV,
+    }),
+  );
   if (!process.env.ADMIN_PASSWORD) return NextResponse.next(); // auth disabled (dev convenience)
   if (PUBLIC_PATHS.some((p) => request.nextUrl.pathname.startsWith(p))) return NextResponse.next();
   if (request.nextUrl.pathname.startsWith("/_next") || request.nextUrl.pathname.startsWith("/health")) {
