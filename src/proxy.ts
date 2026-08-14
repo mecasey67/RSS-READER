@@ -14,6 +14,7 @@ export async function proxy(request: NextRequest) {
       hasSessionSecret: !!process.env.SESSION_SECRET,
       sessionSecretLen: process.env.SESSION_SECRET?.length ?? 0,
       nodeEnv: process.env.NODE_ENV,
+      allEnvKeys: Object.keys(process.env).sort(),
     }),
   );
   if (!process.env.ADMIN_PASSWORD) return NextResponse.next(); // auth disabled (dev convenience)
