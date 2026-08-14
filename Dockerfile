@@ -17,7 +17,6 @@ RUN npm run build
 FROM node:24-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-RUN groupadd --system reader && useradd --system --gid reader reader
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
@@ -29,8 +28,13 @@ COPY --from=builder /app/src/db/client.ts ./src/db/client.ts
 COPY --from=builder /app/src/db/schema.ts ./src/db/schema.ts
 COPY --from=builder /app/scripts/migrate.ts ./scripts/migrate.ts
 
-RUN mkdir -p /app/data && chown -R reader:reader /app/data
-USER reader
+RUN mkdir -p /app/data
+
+# Runs as root: the persistent volume Railway (or any host) mounts at
+# /app/data at container start gets its own ownership, which would shadow
+# whatever a build-time `chown` set for a non-root user — running as root
+# sidesteps that mismatch rather than fighting it with an entrypoint script.
+# Acceptable trade-off for a single-user, self-hosted personal tool.
 
 EXPOSE 3000
 ENV PORT=3000
