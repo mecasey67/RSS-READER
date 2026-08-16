@@ -29,11 +29,34 @@ interface ReaderShellProps {
 }
 
 type MobilePane = "feeds" | "list" | "article";
+export type ArticleListViewMode = "list" | "cards";
 
 export function ReaderShell({ sidebar, initialList, initialArticle, selection, authEnabled }: ReaderShellProps) {
   const router = useRouter();
   const [mobilePane, setMobilePane] = useState<MobilePane>(selection.articleId ? "article" : "list");
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [viewMode, setViewMode] = useState<ArticleListViewMode>("list");
+
+  useEffect(() => {
+    // Reading a browser-only preference on mount (same pattern as
+    // ThemeToggle) — genuinely synchronizing with external storage, not
+    // deriving state from props.
+    const stored = localStorage.getItem("articleListViewMode");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (stored === "cards" || stored === "list") setViewMode(stored);
+  }, []);
+
+  function toggleViewMode() {
+    const next: ArticleListViewMode = viewMode === "list" ? "cards" : "list";
+    setViewMode(next);
+    localStorage.setItem("articleListViewMode", next);
+  }
+
+  // Cards is a full-width browsing layout — once an article is open, the
+  // reader pane needs the space back, so reading always happens in the
+  // normal list+reader layout regardless of which mode you browsed in.
+  const showCardsGrid = viewMode === "cards" && !selection.articleId;
+  const effectiveListMode: ArticleListViewMode = selection.articleId ? "list" : viewMode;
 
   const navigate = useCallback(
     (next: Partial<Selection>, opts: { keepQuery?: boolean } = {}) => {
@@ -169,6 +192,14 @@ export function ReaderShell({ sidebar, initialList, initialArticle, selection, a
         </div>
         <button
           className="rounded px-2 py-1 text-xs text-muted hover:bg-surface-hover"
+          onClick={toggleViewMode}
+          aria-label={viewMode === "list" ? "Switch to Cards view" : "Switch to List view"}
+          title={viewMode === "list" ? "Switch to Cards view" : "Switch to List view"}
+        >
+          {viewMode === "list" ? "⊞" : "☰"}
+        </button>
+        <button
+          className="rounded px-2 py-1 text-xs text-muted hover:bg-surface-hover"
           onClick={() => setShowShortcuts(true)}
           aria-label="Keyboard shortcuts"
         >
@@ -184,7 +215,7 @@ export function ReaderShell({ sidebar, initialList, initialArticle, selection, a
         )}
       </header>
 
-      <div className="grid flex-1 min-h-0 grid-cols-1 md:grid-cols-[240px_360px_1fr]">
+      <div className={`grid flex-1 min-h-0 grid-cols-1 ${showCardsGrid ? "md:grid-cols-[240px_1fr]" : "md:grid-cols-[240px_360px_1fr]"}`}>
         <div className={`${mobilePane === "feeds" ? "block" : "hidden"} min-h-0 overflow-y-auto border-r border-border md:block`}>
           <Sidebar
             data={sidebar}
@@ -196,7 +227,7 @@ export function ReaderShell({ sidebar, initialList, initialArticle, selection, a
           />
         </div>
 
-        <div className={`${mobilePane === "list" ? "block" : "hidden"} min-h-0 overflow-y-auto border-r border-border md:block`}>
+        <div className={`${mobilePane === "list" ? "block" : "hidden"} min-h-0 overflow-y-auto ${showCardsGrid ? "" : "border-r border-border"} md:block`}>
           <ArticleList
             key={`${selection.view}-${selection.feedId}-${selection.folderId}-${selection.query}`}
             title={title}
@@ -204,16 +235,19 @@ export function ReaderShell({ sidebar, initialList, initialArticle, selection, a
             selectedArticleId={selection.articleId}
             onSelect={selectArticle}
             selection={selection}
+            viewMode={effectiveListMode}
           />
         </div>
 
-        <div className={`${mobilePane === "article" ? "block" : "hidden"} min-h-0 overflow-y-auto md:block`}>
-          <ArticleReader
-            article={initialArticle}
-            onBack={() => setMobilePane("list")}
-            onChanged={() => router.refresh()}
-          />
-        </div>
+        {!showCardsGrid && (
+          <div className={`${mobilePane === "article" ? "block" : "hidden"} min-h-0 overflow-y-auto md:block`}>
+            <ArticleReader
+              article={initialArticle}
+              onBack={() => setMobilePane("list")}
+              onChanged={() => router.refresh()}
+            />
+          </div>
+        )}
       </div>
 
       {showShortcuts && <ShortcutHelp onClose={() => setShowShortcuts(false)} />}
