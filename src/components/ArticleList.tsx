@@ -133,7 +133,7 @@ function CardsGrid({ items, selectedArticleId, onSelect }: RowsProps) {
 
   return (
     <ol
-      className="grid flex-1 auto-rows-min grid-cols-2 gap-3 overflow-y-auto p-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      className="grid flex-1 auto-rows-min grid-cols-1 gap-4 overflow-y-auto p-4 sm:grid-cols-2 lg:grid-cols-3"
       aria-label="Articles"
     >
       {items.map((item) => (
